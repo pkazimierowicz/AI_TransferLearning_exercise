@@ -60,19 +60,19 @@ TRAIN_DIR="$DATA_DIR/$EXPERIMENT_ID"
 if [ $MODE == "train" ]
 then
 	# Create label map file from dataset
-	python ./python/create_label_map.py \
+	python3 ./python/create_label_map.py \
 		--data_dir $DATA_DIR \
 		--label_map_path $LABEL_MAP_PATH
 
 	# Create tf records from dataset
-	python ./python/create_data_tf_record.py \
+	python3 ./python/create_data_tf_record.py \
 		--data_dir $DATA_DIR \
 		--output_dir $DATA_DIR \
 		--label_map_path $LABEL_MAP_PATH
 
 	if [ ! -z "$HPARAMS" -a "$HPARAMS" != " " ]; then
         # Create config file
-		python ./python/update_config.py \
+		python3 ./python/update_config.py \
 			--architecture $ARCHITECTURE \
 			--experiment_id $EXPERIMENT_ID \
 			--label_map_path $LABEL_MAP_PATH \
@@ -80,7 +80,7 @@ then
 			--hparams $HPARAMS
 	else
 		# Create config file
-		python ./python/update_config.py \
+		python3 ./python/update_config.py \
 			--architecture $ARCHITECTURE \
 			--experiment_id $EXPERIMENT_ID \
 			--label_map_path $LABEL_MAP_PATH \
@@ -91,7 +91,7 @@ then
 	
 	# Start eval on cpu
 	nohup bash -c "sleep 30; 
-	env CUDA_VISIBLE_DEVICES=-1 python ../models/research/object_detection/eval.py \
+	env CUDA_VISIBLE_DEVICES=-1 python3 ../models/research/object_detection/eval.py \
 		--checkpoint_dir $TRAIN_DIR \
 		--eval_dir \"$TRAIN_DIR/eval\" \
 		--pipeline_config_path \"$TRAIN_DIR/pipeline.config\"" &
@@ -100,14 +100,14 @@ then
 	nohup tensorboard --port 8000 --logdir=$TRAIN_DIR &
 
 	# Start training
-	python ../models/research/object_detection/train.py \
+	python3 ../models/research/object_detection/train.py \
 		--train_dir $TRAIN_DIR \
 		--pipeline_config_path "$TRAIN_DIR/pipeline.config"
 
 elif [ $MODE = "export" ]
 then
 	# Export last trained model in experiment
-	python ../models/research/object_detection/export_inference_graph.py \
+	python3 ../models/research/object_detection/export_inference_graph.py \
 		--trained_checkpoint_prefix $CHECKPOINT_FILE \
 		--output_directory $TRAIN_DIR \
 		--pipeline_config_path "$TRAIN_DIR/pipeline.config"
