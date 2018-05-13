@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+cd "$(dirname "$0")"
+export PYTHONPATH="$PYTHONPATH:$(pwd)/../models/research:$(pwd)/../models/research/slim"
+
 # Usage info
 show_help() {
 cat << EOF
@@ -17,8 +20,8 @@ EOF
 ARCHITECTURE="ssd_mobilenet_v1_coco"
 EXPERIMENT_ID="0"
 HPARAMS=""
-DATA_DIR="/data"
-LABEL_MAP_PATH="/data/label_map.pbtxt"
+DATA_DIR="../data"
+LABEL_MAP_PATH="../data/label_map.pbtxt"
 CHECKPOINT_FILE="model.ckpt"
 
 MODE="train"
@@ -57,19 +60,19 @@ TRAIN_DIR="$DATA_DIR/$EXPERIMENT_ID"
 if [ $MODE == "train" ]
 then
 	# Create label map file from dataset
-	python /python/create_label_map.py \
+	python ./python/create_label_map.py \
 		--data_dir $DATA_DIR \
 		--label_map_path $LABEL_MAP_PATH
 
 	# Create tf records from dataset
-	python /python/create_data_tf_record.py \
+	python ./python/create_data_tf_record.py \
 		--data_dir $DATA_DIR \
 		--output_dir $DATA_DIR \
 		--label_map_path $LABEL_MAP_PATH
 
 	if [ ! -z "$HPARAMS" -a "$HPARAMS" != " " ]; then
         # Create config file
-		python /python/update_config.py \
+		python ./python/update_config.py \
 			--architecture $ARCHITECTURE \
 			--experiment_id $EXPERIMENT_ID \
 			--label_map_path $LABEL_MAP_PATH \
@@ -77,7 +80,7 @@ then
 			--hparams $HPARAMS
 	else
 		# Create config file
-		python /python/update_config.py \
+		python ./python/update_config.py \
 			--architecture $ARCHITECTURE \
 			--experiment_id $EXPERIMENT_ID \
 			--label_map_path $LABEL_MAP_PATH \
@@ -88,7 +91,7 @@ then
 	
 	# Start eval on cpu
 	nohup bash -c "sleep 30; 
-	env CUDA_VISIBLE_DEVICES=-1 python /models/research/object_detection/eval.py \
+	env CUDA_VISIBLE_DEVICES=-1 python ../models/research/object_detection/eval.py \
 		--checkpoint_dir $TRAIN_DIR \
 		--eval_dir \"$TRAIN_DIR/eval\" \
 		--pipeline_config_path \"$TRAIN_DIR/pipeline.config\"" &
@@ -97,22 +100,15 @@ then
 	nohup tensorboard --port 8000 --logdir=$TRAIN_DIR &
 
 	# Start training
-	python /models/research/object_detection/train.py \
+	python ../models/research/object_detection/train.py \
 		--train_dir $TRAIN_DIR \
 		--pipeline_config_path "$TRAIN_DIR/pipeline.config"
 
 elif [ $MODE = "export" ]
 then
 	# Export last trained model in experiment
-	python /models/research/object_detection/export_inference_graph.py \
+	python ../models/research/object_detection/export_inference_graph.py \
 		--trained_checkpoint_prefix $CHECKPOINT_FILE \
 		--output_directory $TRAIN_DIR \
 		--pipeline_config_path "$TRAIN_DIR/pipeline.config"
-
-	/tensorflow/bazel-bin/tensorflow/tools/graph_transforms/transform_graph \
-		--in_graph="$TRAIN_DIR/frozen_inference_graph.pb" \
-		--out_graph="$TRAIN_DIR/quantized_graph.pb" \
-		--inputs='image_tensor' \
-		--outputs='detection_boxes,detection_scores,detection_classes,num_detections' \
-		--transforms='quantize_weights'
 fi
