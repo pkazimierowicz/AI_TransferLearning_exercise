@@ -4,6 +4,12 @@ set -e
 cd "$(dirname "$0")"
 export PYTHONPATH="$PYTHONPATH:$(pwd)/../models/research:$(pwd)/../models/research/slim"
 
+if [ ! -e "../models/research/object_detection/protos/train_pb2.py" ]; then
+	pushd "../models/research"
+	protoc object_detection/protos/*.proto --python_out=.
+	popd
+fi
+
 # Usage info
 show_help() {
 cat << EOF
