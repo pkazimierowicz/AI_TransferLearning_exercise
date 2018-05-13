@@ -1,5 +1,6 @@
 ## Requirements
 * Requirements:
+    * ~8G free RAM
     * python3
     * python-tensorflow
     * protobuf (3+)
@@ -11,7 +12,7 @@ If you're on Ubuntu 18.04, just run this:
 
 ```bash
 sudo apt install -y git curl eog python3 python3-pip protobuf-compiler
-sudo pip3 install lxml
+sudo pip3 install lxml matplotlib
 sudo pip3 install tensorflow # or tensorflow-gpu if you have CUDA capable GPU and drivers
 ```
 
@@ -21,7 +22,7 @@ $ git clone https://github.com/pkazimierowicz/AI_TransferLearning_exercise.git
 $ cd AI_TransferLearning_exercise
 $ git submodule update --init
 $ data/download_sample.sh
-$ scripts/learn.sh -m train -p '{"batch_size":8,"learning_steps":10000}'
+$ scripts/learn.sh -m train -p '{"batch_size":8,"learning_rate":0.003,"train_steps":10000}'
 $ scripts/learn.sh -m export -c model.ckpt-10000
 $ scripts/detect.sh data/images/*.jpg
 $ eog data/images/*.jpg
