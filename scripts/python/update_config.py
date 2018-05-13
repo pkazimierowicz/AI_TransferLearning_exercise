@@ -102,7 +102,7 @@ def main(_):
         eval_input_path=os.path.join(FLAGS.data_dir, 'val.record'))
 
     if FLAGS.hparams:
-        for key, val in json.loads(FLAGS.hparams).iteritems():
+        for key, val in json.loads(FLAGS.hparams).items():
               hparams.add_hparam(key, val)
     
     config_util.merge_external_params_with_configs(configs, hparams)
