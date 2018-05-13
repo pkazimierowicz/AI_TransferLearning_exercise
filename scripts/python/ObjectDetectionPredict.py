@@ -81,14 +81,19 @@ class ObjectDetectionPredict():
 
 def main():
     ObjectDetectionPredict_class = ObjectDetectionPredict(args.model, args.labels)
+    c = 0
     for image_path in args.images:
+        c += 1
         image = Image.open(image_path)
         (im_width, im_height) = image.size
         image_np = np.array(image.getdata()).reshape(
             (im_height, im_width, 3)).astype(np.uint8)
 
+        out_path = image_path.replace(".jpg", ".labeled.jpg")
+        print("Creating %s (%d/%d)..." % (out_path, c, len(args.images)))
         scores, classes, image_with_labels = ObjectDetectionPredict_class.detect_objects(image_np)
-        print("\n".join("{0:<20s}: {1:.1f}%".format(ObjectDetectionPredict_class.category_index[c]['name'], s*100.) for (c, s) in zip(classes[0], scores[0])))
+        im = Image.fromarray(image_with_labels)
+        im.save(out_path, 'JPEG')
 
     ObjectDetectionPredict_class.sess.close()
 
