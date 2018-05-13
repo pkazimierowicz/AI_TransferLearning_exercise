@@ -114,7 +114,7 @@ elif [ $MODE = "export" ]
 then
 	# Export last trained model in experiment
 	python3 ../models/research/object_detection/export_inference_graph.py \
-		--trained_checkpoint_prefix $CHECKPOINT_FILE \
+		--trained_checkpoint_prefix "$TRAIN_DIR/$CHECKPOINT_FILE" \
 		--output_directory $TRAIN_DIR \
 		--pipeline_config_path "$TRAIN_DIR/pipeline.config"
 fi
