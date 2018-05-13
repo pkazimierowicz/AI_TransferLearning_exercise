@@ -90,10 +90,10 @@ def main(_):
     arch_details = arch_map[FLAGS.architecture]
     # check graph type, download graph
     graph_url = arch_details['url']
-    graph_path = '/models/research/object_detection/data/'
+    graph_path = '../models/research/object_detection/data/'
     maybe_download_and_extract(graph_url, graph_path)
     # Open config file
-    config_path = os.path.join('/models/research/object_detection/samples/configs', 
+    config_path = os.path.join('../models/research/object_detection/samples/configs', 
         arch_details['config'])
     configs = config_util.get_configs_from_pipeline_file(config_path)
     # Update paths in config

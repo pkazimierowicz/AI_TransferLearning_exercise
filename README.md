@@ -10,7 +10,8 @@
 If you're on Ubuntu 18.04, just run this:
 
 ```bash
-sudo apt install -y git curl eog python3 python3-pip
+sudo apt install -y git curl eog python3 python3-pip protobuf-compiler
+sudo pip3 install lxml
 sudo pip3 install tensorflow # or tensorflow-gpu if you have CUDA capable GPU and drivers
 ```
 
