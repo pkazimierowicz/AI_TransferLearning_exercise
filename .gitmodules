@@ -1,6 +1,3 @@
-[submodule "RaspberryPi-ObjectDetection-TensorFlow"]
-	path = RaspberryPi-ObjectDetection-TensorFlow
-	url = https://github.com/NanoNets/RaspberryPi-ObjectDetection-TensorFlow.git
 [submodule "models"]
 	path = models
 	url = https://github.com/tensorflow/models.git
