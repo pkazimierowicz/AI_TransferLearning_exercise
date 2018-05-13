@@ -18,7 +18,7 @@ sudo pip3 install tensorflow # or tensorflow-gpu if you have CUDA capable GPU an
 
 ## Quick start
 
-####Clone the repository and `TensorFlow/models` submodule repository:
+#### Clone the repository and `TensorFlow/models` submodule repository:
 ```
 $ git clone https://github.com/pkazimierowicz/AI_TransferLearning_exercise.git
 $ cd AI_TransferLearning_exercise
